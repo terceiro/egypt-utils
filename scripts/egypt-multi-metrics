@@ -1,0 +1,17 @@
+#!/bin/sh
+
+PROGRAM_NAME=$(basename $0)
+
+warn() {
+  msg="$1"
+  echo "$PROGRAM_NAME: $msg"
+}
+
+for dir in $(find . -mindepth 1 -maxdepth 1 -type d -not -name .git -and -not -name .svn); do
+  egypt metrics "$dir" > "$dir.yml"
+  if [ ! -s "$dir.yml" ]; then
+    warn "It looks like $dir does not contain source code to be analyzed."
+    warn "You'll probably want to check it out manually."
+    rm -f "$dir.yml"
+  fi
+done
